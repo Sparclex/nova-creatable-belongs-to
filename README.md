@@ -7,18 +7,6 @@ BelongsTo Field for [Laravel Nova](https://nova.laravel.com) which allows to cho
 [![License](https://poser.pugx.org/sparclex/nova-creatable-belongs-to/license)](https://packagist.org/packages/sparclex/nova-creatable-belongs-to)
 [![StyleCI](https://github.styleci.io/repos/163976480/shield?branch=master)](https://github.styleci.io/repos/163976480)
 
-
-## Installation
-
-# Creatable BelongsTo Field for Laravel Nova
-BelongsTo Field for [Laravel Nova](https://nova.laravel.com) which allows to choose or create a resource
-
-[![Latest Stable Version](https://poser.pugx.org/sparclex/nova-creatable-belongs-to/v/stable)](https://packagist.org/packages/sparclex/nova-creatable-belongs-to)
-[![Total Downloads](https://poser.pugx.org/sparclex/nova-creatable-belongs-to/downloads)](https://packagist.org/packages/sparclex/nova-creatable-belongs-to)
-[![Latest Unstable Version](https://poser.pugx.org/sparclex/nova-creatable-belongs-to/v/unstable)](https://packagist.org/packages/sparclex/nova-creatable-belongs-to)
-[![License](https://poser.pugx.org/sparclex/nova-creatable-belongs-to/license)](https://packagist.org/packages/sparclex/nova-creatable-belongs-to)
-[![StyleCI](https://github.styleci.io/repos/163976480/shield?branch=master)](https://github.styleci.io/repos/163976480)
-
 ## Use Case
 
 Ever had the following database structure and did not want the user to create the related resource (product_types) seperatly since it only consists of a unique name. But you don't want to put the product_type directly in the products table, since it would violate the third normal form.
