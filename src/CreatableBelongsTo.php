@@ -2,16 +2,14 @@
 
 namespace Sparclex\NovaCreatableBelongsTo;
 
-use App\Models\Study;
-use Illuminate\Validation\Rules\Unique;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Fields\ResourceRelationshipGuesser;
+use Laravel\Nova\Fields\BelongsTo;
+use Illuminate\Validation\Rules\Unique;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 
 class CreatableBelongsTo extends BelongsTo
 {
-
     public $searchable = true;
     /**
      * The field's component.
@@ -20,7 +18,7 @@ class CreatableBelongsTo extends BelongsTo
      */
     public $component = 'nova-creatable-belongs-to';
     /**
-     * Attribute for the name of the related resource
+     * Attribute for the name of the related resource.
      *
      * @var string
      */
@@ -61,16 +59,18 @@ class CreatableBelongsTo extends BelongsTo
     {
         $this->meta['prepopulate'] = true;
         $this->meta['prepopulate_query'] = $query;
+
         return $this;
     }
 
-    public function checkForCreationUsing(callable $creationCheckCallback = null) {
+    public function checkForCreationUsing(callable $creationCheckCallback = null)
+    {
         $this->creationCheckCallback = $creationCheckCallback;
     }
 
     public function shouldCreateResource(NovaRequest $request)
     {
-        if($this->creationCheckCallback) {
+        if ($this->creationCheckCallback) {
             return call_user_func($this->creationCheckCallback, $request);
         }
 
@@ -79,13 +79,14 @@ class CreatableBelongsTo extends BelongsTo
 
     public function getRules(NovaRequest $request)
     {
-        if (!$this->shouldCreateResource($request)) {
+        if (! $this->shouldCreateResource($request)) {
             return parent::getRules($request);
         }
+
         return array_merge_recursive(Field::getRules($request), [
             $this->attribute => array_filter([
                 $this->nullable ? 'nullable' : 'required',
-                new Unique($this->relatedModelTableName(), $this->nameAttribute)
+                new Unique($this->relatedModelTableName(), $this->nameAttribute),
             ]),
         ]);
     }
@@ -101,8 +102,9 @@ class CreatableBelongsTo extends BelongsTo
 
     public function fill(NovaRequest $request, $model)
     {
-        if (!$this->shouldCreateResource($request)) {
+        if (! $this->shouldCreateResource($request)) {
             parent::fill($request, $model);
+
             return;
         }
 
