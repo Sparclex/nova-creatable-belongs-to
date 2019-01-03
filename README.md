@@ -54,13 +54,3 @@ public function fields(Request $request)
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-
-## TODO
-- [ ] Tests
-- [ ] Respect policies for creation
-
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
