@@ -1,0 +1,30 @@
+{
+    "name": "sparclex/nova-creatable-belongs-to",
+    "description": "A Laravel Nova field.",
+    "keywords": [
+        "laravel",
+        "nova"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.1.0",
+        "laravel/nova": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sparclex\\NovaCreatableBelongsTo\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sparclex\\NovaCreatableBelongsTo\\FieldServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
