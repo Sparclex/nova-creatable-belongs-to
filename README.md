@@ -28,7 +28,7 @@ public function fields(Request $request)
 {
     return [
         ID::make()->sortable(),
-        CreatableBelongsTo::make('ProductType', 'productType', 'App\ProductType', 'name')
+        CreatableBelongsTo::make('ProductType', 'productType', 'App\Nova\ProductType', 'name')
             ->prepopulate()
     ];
 }
