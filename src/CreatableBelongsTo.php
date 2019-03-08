@@ -2,11 +2,11 @@
 
 namespace Sparclex\NovaCreatableBelongsTo;
 
-use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\BelongsTo;
-use Illuminate\Validation\Rules\Unique;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\ResourceRelationshipGuesser;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\TrashedStatus;
 
 class CreatableBelongsTo extends BelongsTo
 {
@@ -38,6 +38,31 @@ class CreatableBelongsTo extends BelongsTo
     }
 
     /**
+     * Build an associatable query for the field.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param  bool $withTrashed
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function buildAssociatableQuery(NovaRequest $request, $withTrashed = false)
+    {
+        $model = forward_static_call(
+            [$resourceClass = $this->resourceClass, 'newModel']
+        );
+
+        $query = $request->first === 'true'
+            ? $model->newQueryWithoutScopes()->where($this->nameAttribute, $request->current)
+            : $resourceClass::buildIndexQuery(
+                $request, $model->newQuery(), $request->search,
+                [], [], TrashedStatus::fromBoolean($withTrashed)
+            );
+
+        return $query->tap(function ($query) use ($request, $model) {
+            forward_static_call($this->associatableQueryCallable($request, $model), $request, $query);
+        });
+    }
+
+    /**
      * Resolve the field's value.
      *
      * @param  mixed $resource
@@ -49,7 +74,7 @@ class CreatableBelongsTo extends BelongsTo
         $value = $resource->{$this->attribute};
 
         if ($value) {
-            $this->belongsToId = $value->getKey();
+            $this->belongsToId = $this->formatDisplayValue($value);
 
             $this->value = $this->formatDisplayValue($value);
         }
@@ -106,8 +131,8 @@ class CreatableBelongsTo extends BelongsTo
     /**
      * Format the given associatable resource.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  mixed  $resource
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param  mixed $resource
      * @return array
      */
     public function formatAssociatableResource(NovaRequest $request, $resource)
