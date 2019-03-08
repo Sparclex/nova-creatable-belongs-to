@@ -2,11 +2,11 @@
 
 namespace Sparclex\NovaCreatableBelongsTo;
 
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Fields\ResourceRelationshipGuesser;
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\TrashedStatus;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\ResourceRelationshipGuesser;
 
 class CreatableBelongsTo extends BelongsTo
 {
@@ -118,7 +118,7 @@ class CreatableBelongsTo extends BelongsTo
         );
 
         $relatedModel = $relatedModel::firstOrCreate([
-            $this->nameAttribute => $request->{$this->attribute}
+            $this->nameAttribute => $request->{$this->attribute},
         ]);
 
         $model->{$model->{$this->attribute}()->getForeignKey()} = $relatedModel->getKey();
