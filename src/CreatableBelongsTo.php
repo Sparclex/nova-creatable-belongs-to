@@ -68,25 +68,11 @@ class CreatableBelongsTo extends BelongsTo
         $this->creationCheckCallback = $creationCheckCallback;
     }
 
-    public function shouldCreateResource(NovaRequest $request)
-    {
-        if ($this->creationCheckCallback) {
-            return call_user_func($this->creationCheckCallback, $request);
-        }
-
-        return is_string($request->get($this->attribute));
-    }
-
     public function getRules(NovaRequest $request)
     {
-        if (! $this->shouldCreateResource($request)) {
-            return parent::getRules($request);
-        }
-
         return array_merge_recursive(Field::getRules($request), [
             $this->attribute => array_filter([
                 $this->nullable ? 'nullable' : 'required',
-                new Unique($this->relatedModelTableName(), $this->nameAttribute),
             ]),
         ]);
     }
@@ -102,23 +88,34 @@ class CreatableBelongsTo extends BelongsTo
 
     public function fill(NovaRequest $request, $model)
     {
-        if (! $this->shouldCreateResource($request)) {
-            parent::fill($request, $model);
-
-            return;
-        }
-
         $relatedModel = forward_static_call(
             [$this->resourceClass, 'newModel']
         );
 
-        $relatedModel->{$this->nameAttribute} = $request->{$this->attribute};
-        $relatedModel->save();
+        $relatedModel = $relatedModel::firstOrCreate([
+            $this->nameAttribute => $request->{$this->attribute}
+        ]);
 
         $model->{$model->{$this->attribute}()->getForeignKey()} = $relatedModel->getKey();
 
         if ($this->filledCallback) {
             call_user_func($this->filledCallback, $request, $model);
         }
+    }
+
+    /**
+     * Format the given associatable resource.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  mixed  $resource
+     * @return array
+     */
+    public function formatAssociatableResource(NovaRequest $request, $resource)
+    {
+        return array_filter([
+            'avatar' => $resource->resolveAvatarUrl($request),
+            'display' => $this->formatDisplayValue($resource),
+            'value' => $this->formatDisplayValue($resource),
+        ]);
     }
 }
