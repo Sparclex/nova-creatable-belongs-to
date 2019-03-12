@@ -80,6 +80,36 @@ class CreatableBelongsTo extends BelongsTo
         }
     }
 
+    /**
+     * Resolve the field's value for display.
+     *
+     * @param  mixed  $resource
+     * @param  string|null  $attribute
+     * @return void
+     */
+    public function resolveForDisplay($resource, $attribute = null)
+    {
+        $attribute = $attribute ?? $this->attribute;
+
+        if ($attribute === 'ComputedField') {
+            return;
+        }
+
+        if (! $this->displayCallback) {
+            $value = $resource->{$attribute};
+
+            $this->belongsToId = $value->getKey();
+
+            $this->value = $this->formatDisplayValue($value);;
+        }
+
+        $value = data_get($resource, str_replace('->', '.', $attribute), '___missing');
+
+        if (is_callable($this->displayCallback) && $value !== '___missing') {
+            $this->value = call_user_func($this->displayCallback, $value);
+        }
+    }
+
     public function prepopulate($query = null)
     {
         $this->meta['prepopulate'] = true;
