@@ -100,7 +100,7 @@ class CreatableBelongsTo extends BelongsTo
 
             $this->belongsToId = $value->getKey();
 
-            $this->value = $this->formatDisplayValue($value);;
+            $this->value = $this->formatDisplayValue($value);
         }
 
         $value = data_get($resource, str_replace('->', '.', $attribute), '___missing');
