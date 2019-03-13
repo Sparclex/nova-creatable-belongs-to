@@ -97,10 +97,11 @@ class CreatableBelongsTo extends BelongsTo
 
         if (! $this->displayCallback) {
             $value = $resource->{$attribute};
+            if ($value) {
+                $this->belongsToId = $value->getKey();
 
-            $this->belongsToId = $value->getKey();
-
-            $this->value = $this->formatDisplayValue($value);
+                $this->value = $this->formatDisplayValue($value);
+            }
         }
 
         $value = data_get($resource, str_replace('->', '.', $attribute), '___missing');
