@@ -152,7 +152,7 @@ class CreatableBelongsTo extends BelongsTo
             $this->nameAttribute => $request->{$this->attribute},
         ]);
 
-        $model->{$model->{$this->attribute}()->getForeignKey()} = $relatedModel->getKey();
+        $model->{$model->{$this->attribute}()->getForeignKeyName()} = $relatedModel->getKey();
 
         if ($this->filledCallback) {
             call_user_func($this->filledCallback, $request, $model);
